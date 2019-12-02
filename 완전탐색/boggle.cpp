@@ -21,9 +21,8 @@ bool hasWord(int y, int x, const string&word) {
 }
 
 int main() {
-	string word;	cin >> word;
-	int Y, X;		cin >> Y >> X;
-
+	string word; cin >> word;
+	int Y, X; cin >> Y >> X;
 	cout << hasWord(Y, X, word) << endl;
 	return 0;
 }
