@@ -1,5 +1,5 @@
 /*
-	ㄴ모양 블럭으로 H*W 크기 게임판을 덮자
+	?��모양 블럭?���? H*W ?���? 게임?��?�� ?��?��
 */
 #include <bits/stdc++.h>
 using namespace std;
