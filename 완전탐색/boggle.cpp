@@ -10,6 +10,7 @@ inline bool inRange(int y, int x) { return ( y<=100 && x<=100 && y>=0 && x>=0 );
 
 bool hasWord(int y, int x, const string&word) {
 	if(!inRange(y, x)) return false;
+
 	if(board[y][x] != word[0]) return false;
 	if(word.length() == 1) return true;
 	for(int dir=0; dir<8; ++dir) {
