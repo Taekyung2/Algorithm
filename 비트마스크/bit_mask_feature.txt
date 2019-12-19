@@ -1,0 +1,85 @@
+비트마스크
+
+-> 현대의 모든cpu는 이진수를 이용해 모든 자료를 표현합니다.
+-> 내부적으로 이진수를 사용하는 컴퓨터들은 이진법 관련 연산들을 아주 빨리 할 수 있습니다.
+
+1. 더 빠른 수행 시간
+2. 더 간결한 코드
+3. 더 작은 메모리 사용량
+4. 연관 배열을 배열로 대체할 수 있음
+
+a & b
+a | b
+a ^ b
+~a
+a << b = 정수 a를 왼쪽으로 b비트 시프트
+a >> b = 정수 a를 오른쪽으로 b비트 시프트
+
+* 비트 연산자의 우선순위는 비교 연산자의 우선순위보다 낮다
+ex) int c = (6 & 4 == 4);
+=> 4 == 4 가 먼저 계산되어 6 & 1 이 되고 c는 0이 됩니다.
+=> 하지만 원래 의도는 0110 & 0100 = 0100 == 4 를 의도
+
+
+-> 비트마스크의 가장 중요한 사용 사례는 집합을 구현 하는 것
+int fullPizza = (1 << 20) - 1;
+=> 1 << 20 은 1 뒤에 20개의 0이 있는 정수, 여기서 1을 빼면 20개의 비트가 모두 켜진 수를 얻을 수 있다.
+
+toppings |= (1 << p);
+=> 1을 왼쪽으로 p비트 시프트하면 p번 비트만 켜진 정수가 되므로 이 값과 toppings를 비트별 or하면 해당 비트는 반드시 켜짐
+
+if(toppings & (1 << p)) cout << "pepperoni is in" << endl;
+=> & 연산의 결과값이 0 또는 1 << p 라는 점을 유의, true, false가 아니다
+
+toppings &= ~(1 << p);
+=> ~연산자는 비트별 not연산을 수행하므로, ~(1 << p)는 해당 비트만 꺼지고 나머지는 다 켜진 숫자가 됨
+=> 이 숫자와 비트별 and연산을 수행하면 나머지 비트는 유지되고 p비트만 꺼진다
+
+toppings ^= (1 << p);
+=> p비트가 켜져있다면 끄고, 꺼져있다면 켠다.
+
+int added 			= (a | b); => 합집합
+int intersection	= (a & b); => 교집합
+int removed			= (a & ~b) => a에서 b를 뺀 차집합
+int toggled 		= (a ^ b); => a와 b중 하나에만 포함된 원소들의 집합
+
+집합의 크기 구하기
+int bitCount(int x) {
+	if(x == 0) return 0;
+	return x % 2 + bitCount(x / 2);
+}
+
+최소 원소 찾기
+int firstTopping = (toppings & -toppings); => -toppings 는 2의 보수를 이용하게 됨, ~toppings + 1 == -toppings
+
+최소 원소 지우기
+toppings &= (toppings - 1);
+
+모든 부분 집합 순회하기
+for(int subset = pizza; subset; subset = ((subset - 1) & pizza)) {
+	//subset은 pizza의 부분집합
+}
+
+ex 비트마스크를 이용한 에라토스테네스의 체
+int n;
+unsigned char sieve[(MAX_N) + 7 / 8];
+//k가 소수인지 확인한다.
+inline bool isPrime(int k) 
+	return sieve[k >> 3] & (1 << (k & 7));
+
+//k가 소수가 아니라고 표시한다
+inline void setComposite(int k)
+	sieve[k >> 3] &= ~(1 << (k & 7));
+
+//이 함수를 수행하고 난 뒤, isPrime()을 이용해 각 수가 소수인지 알 수 있다.
+void eratosthenes() {
+	memset(sieve, 255, sizeof(sieze));
+	setComposite(0);
+	setCOmposite(1);
+	int sqrtn = int(sqrt(n));
+	for(int i = 2; i <=sqrtn; ++i)
+		if(isPrime(i))
+			//i의 배수 j들에 대해isPrime[j] = false로 둔다
+			//i * i 미만의 배수는 이미 지워졌으므로 신경 쓰지 않는다
+			for(int j = i * i; j <= n; j += i)
+				setComposite(j);
